@@ -781,6 +781,20 @@ shared_examples "Fog storage" do |fog_credentials|
             expect(@fog_file.empty?).to be true
           end
         end
+
+        context "performance optimization" do
+          it "should not call exists? method when checking empty? on non-existent file" do
+            @fog_file.delete
+            expect(@fog_file).not_to receive(:exists?)
+            expect(@fog_file.empty?).to be true
+          end
+
+          it "should not call size method when checking empty? on existing file" do
+            # The optimization should directly check file.content_length instead of calling size
+            expect(@fog_file).not_to receive(:size)
+            expect(@fog_file.empty?).to be false
+          end
+        end
       end
     end
   end
