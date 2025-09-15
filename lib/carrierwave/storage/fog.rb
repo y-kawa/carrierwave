@@ -317,8 +317,11 @@ module CarrierWave
         # [Boolean] whether the file is non-existent or empty
         #
         def empty?
-          !exists? || size.zero?
+          file_obj = file
+          return true if file_obj.nil?
+          file_obj.content_length.zero?
         end
+        alias_method :blank?, :empty?
 
         ##
         # Check if the file exists on the remote service
